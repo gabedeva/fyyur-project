@@ -1,14 +1,25 @@
 from datetime import datetime
-from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from optparse import Values
+from wsgiref.validate import validator
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, TextAreaField
+from wtforms.validators import DataRequired, AnyOf, URL, InputRequired, NoneOf, Optional
 
-class ShowForm(Form):
-    artist_id = StringField(
-        'artist_id'
+class ShowForm(FlaskForm):
+    # create show form #
+    artist = SelectField(
+        'artist',
+        coerce=int,
+        validators=[InputRequired(), NoneOf(
+            Values=[0], message='Invalid option. Choose any of the options below'
+        )]
     )
-    venue_id = StringField(
-        'venue_id'
+    venue = SelectField(
+        'venue',
+        coerce=int,
+        validators=[InputRequired(), NoneOf(
+            Values=[0], message='Invalid option. Choose any of the options below'
+        )]
     )
     start_time = DateTimeField(
         'start_time',
@@ -17,14 +28,15 @@ class ShowForm(Form):
     )
 
 class VenueForm(Form):
+    # create and edit venue forms #
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name', validators=[InputRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city', validators=[InputRequired()]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
+        'state', validators=[InputRequired()],
         choices=[
             ('AL', 'AL'),
             ('AK', 'AK'),
@@ -80,17 +92,17 @@ class VenueForm(Form):
         ]
     )
     address = StringField(
-        'address', validators=[DataRequired()]
+        'address', validators=[InputRequired()]
     )
     phone = StringField(
         'phone'
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[URL(), Optional()]
     )
     genres = SelectMultipleField(
         # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
+        'genres', validators=[InputRequired()],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -114,29 +126,30 @@ class VenueForm(Form):
         ]
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(), Optional]
     )
     website_link = StringField(
-        'website_link'
+        'website_link', validators=[URL(), Optional]
     )
 
     seeking_talent = BooleanField( 'seeking_talent' )
 
-    seeking_description = StringField(
+    seeking_description = TextAreaField(
         'seeking_description'
     )
 
 
 
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
+    # create and edit artist form #
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name', validators=[InputRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city', validators=[InputRequired()]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
+        'state', validators=[InputRequired()],
         choices=[
             ('AL', 'AL'),
             ('AK', 'AK'),
@@ -196,10 +209,10 @@ class ArtistForm(Form):
         'phone'
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[URL(), Optional()]
     )
     genres = SelectMultipleField(
-        'genres', validators=[DataRequired()],
+        'genres', validators=[InputRequired()],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -224,16 +237,16 @@ class ArtistForm(Form):
      )
     facebook_link = StringField(
         # TODO implement enum restriction
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(), Optional()]
      )
 
     website_link = StringField(
-        'website_link'
+        'website_link', validators=[URL(), Optional()]
      )
 
     seeking_venue = BooleanField( 'seeking_venue' )
 
-    seeking_description = StringField(
+    seeking_description = TextAreaField(
             'seeking_description'
      )
 
