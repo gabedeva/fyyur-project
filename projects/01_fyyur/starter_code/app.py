@@ -49,7 +49,7 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Column)
+    seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String)
 
     def __init__(self, name, genres, city, state, address, phone, facebook_link):

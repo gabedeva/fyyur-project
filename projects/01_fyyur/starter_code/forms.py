@@ -3,7 +3,7 @@ from optparse import Values
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, AnyOf, URL, InputRequired, NoneOf, Optional
+from wtforms.validators import InputRequired, URL, NoneOf, Optional
 
 class ShowForm(FlaskForm):
     # create show form #
@@ -11,23 +11,23 @@ class ShowForm(FlaskForm):
         'artist',
         coerce=int,
         validators=[InputRequired(), NoneOf(
-            Values=[0], message='Invalid option. Choose any of the options below'
+            values=[0], message='Invalid option. Choose any of the options below'
         )]
     )
     venue = SelectField(
         'venue',
         coerce=int,
         validators=[InputRequired(), NoneOf(
-            Values=[0], message='Invalid option. Choose any of the options below'
+            values=[0], message='Invalid option. Choose any of the options below'
         )]
     )
     start_time = DateTimeField(
         'start_time',
-        validators=[DataRequired()],
+        validators=[InputRequired()],
         default= datetime.today()
     )
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     # create and edit venue forms #
     name = StringField(
         'name', validators=[InputRequired()]
