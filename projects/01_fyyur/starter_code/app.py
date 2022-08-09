@@ -120,50 +120,50 @@ def create_venue_submission():
 def venues():
     venues = Venue.query.order_by(Venue.state, Venue.city).all()
 
+    previous_city = None
+    previous_state = None
     data = []
-    tmp = {}
-    prev_city = None
-    prev_state = None
+    respdata = {}
     for venue in venues:
         venue_data = {
             'id': venue.id,
             'name': venue.name,
             'num_upcoming_shows': len(list(filter(lambda x: x.start_time > datetime.today(), venue.shows)))
         }
-        if venue.city == prev_city and venue.state == prev_state:
-            tmp['venues'].append(venue_data)
+        if venue.city == previous_city and venue.state == previous_state:
+            respdata['venues'].append(venue_data)
         else:
-            if prev_city is not None:
-                data.append(tmp)
-            tmp['city'] = venue.city
-            tmp['state'] = venue.state
-            tmp['venues'] = [venue_data]
-        prev_city = venue.city
-        prev_state = venue.state
+            if previous_city is not None:
+                data.append(respdata)
+            respdata['city'] = venue.city
+            respdata['state'] = venue.state
+            respdata['venues'] = [venue_data]
+        previous_city = venue.city
+        previous_state = venue.state
 
-    data.append(tmp)
+    data.append(respdata)
     return render_template('pages/venues.html', areas=data)
 
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-    search_term = request.form.get('search_term')
+    search_keyword = request.form.get('search_keyword')
     venues = Venue.query.filter(
-        Venue.name.ilike('%{}%'.format(search_term))).all()
+        Venue.name.ilike('%{}%'.format(search_keyword))).all()
 
     data = []
     for venue in venues:
-        tmp = {}
-        tmp['id'] = venue.id
-        tmp['name'] = venue.name
-        tmp['num_upcoming_shows'] = len(venue.shows)
-        data.append(tmp)
+        searchres = {}
+        searchres['id'] = venue.id
+        searchres['name'] = venue.name
+        searchres['num_upcoming_shows'] = len(venue.shows)
+        data.append(searchres)
 
-    response = {}
-    response['count'] = len(data)
-    response['data'] = data
+    dataresp = {}
+    dataresp['count'] = len(data)
+    dataresp['data'] = data
 
-    return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
+    return render_template('pages/search_venues.html', results=dataresp, search_keyword=request.form.get('search_keyword', ''))
 
 # Get a venue by its id
 @app.route('/venues/<int:venue_id>')
