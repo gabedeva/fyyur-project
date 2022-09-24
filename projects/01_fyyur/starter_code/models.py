@@ -81,6 +81,7 @@ class Venue(db.Model):
             'website': self.website,
             'seeking_talent': self.seeking_talent,
             'seeking_description': self.seeking_description,
+            'upcoming_shows_count': self.upcoming_shows_count
         }
 
     def __repr__(self):
